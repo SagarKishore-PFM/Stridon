@@ -11,6 +11,7 @@
         <li>Group Permissions- {{ paid_group.permissions.all }}</li>
         <li>User has group permission - {{ perms.stridon_app.can_view_paid_articles }}</li>
     </ul>
+    <a href="{% url 'home' %}">Go back home</a>
 </div>
 
 {% endblock body %}
