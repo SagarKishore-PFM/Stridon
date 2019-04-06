@@ -46,6 +46,22 @@ def subscribe(request):
     return render(request, 'stridon_app/subscribe.html', context=context)
 
 
+@login_required(login_url='/login/')
+def unsubscribe(request):
+    paid_user_group = Group.objects.get(name='Paid Users Group')
+    stridon_user = None
+    if request.user.is_authenticated:
+        stridon_user = request.user
+    stridon_user.groups.remove(paid_user_group)
+    paid_user_group.save()
+    stridon_user.save()
+    context = {
+        'stridon_user': stridon_user,
+        'paid_group': paid_user_group,
+    }
+    return render(request, 'stridon_app/unsubscribe.html', context=context)
+
+
 def alice(request):
     run()
     return render(request, 'stridon_app/alice.html')
