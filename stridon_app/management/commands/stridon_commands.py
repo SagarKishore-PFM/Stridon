@@ -39,7 +39,7 @@ class Command(BaseCommand):
 
         # Create Groups
         self.stdout.write("Creating Free and Paid Groups")
-        free_user_group, created = Group.objects.get_or_create(name='free_users_group')
+        free_user_group, created = Group.objects.get_or_create(name='Free Users Group')
         paid_user_group, created = Group.objects.get_or_create(name='Paid Users Group')
 
         # Fetch the required permission and add it to the group
