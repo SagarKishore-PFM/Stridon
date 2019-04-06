@@ -1,6 +1,20 @@
 {% extends 'stridon_app/base.html' %}
 {% block body %}
-    <h1 class="container">
-        Hello. Welcome {{ user.username }}
+<div class="container">
+    <h1>
+        Hello. Welcome {{ stridon_user.username }}
     </h1>
+    {% if perms.stridon_app.can_view_paid_articles %}
+        <p>You are a paid member of Stridon!.</p>
+    {% else %}
+        <p>Subscribe to Stridon Premium for our best content</p>
+    {% endif %}
+    </h2>
+    <ol>
+        <li>
+            <a href="{% url 'subscribe' %}">Subscribe to Stridon</a>
+        </li>
+    </ol>
+</div>
+
 {% endblock body %}
