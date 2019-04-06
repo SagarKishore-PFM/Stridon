@@ -18,10 +18,11 @@ urlpatterns = [
     path('doctor/', views.doctor, name='doctor'),
     path('subscribe/', views.subscribe, name='subscribe'),
     path('unsubscribe/', views.unsubscribe, name='unsubscribe'),
-    path('add_article/', views.add_article, name='add-article'),
+    path('add-article/', views.add_article, name='add-article'),
     re_path(
         r'^view_article/(?P<article_id>\d+)/$',
         views.view_article,
         name='view-article'
     ),
+    path('articles-list/', views.list_articles, name='list-articles'),
 ]
