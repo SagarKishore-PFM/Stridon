@@ -11,4 +11,5 @@ urlpatterns = [
     path('alice/', views.alice, name='alice'),
     path('doctor/', views.doctor, name='doctor'),
     path('subscribe/', views.subscribe, name='subscribe'),
+    path('unsubscribe/', views.unsubscribe, name='unsubscribe'),
 ]
