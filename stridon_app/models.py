@@ -16,8 +16,9 @@ class Article(models.Model):
 
     class Meta:
         permissions = [
-        ('can_view_paid_articles', 'Can View Paid Articles'),
-    ]
+            ('can_view_paid_articles', 'Can View Paid Articles'),
+        ]
+
 # TODO:
 
 # (Maybe)
