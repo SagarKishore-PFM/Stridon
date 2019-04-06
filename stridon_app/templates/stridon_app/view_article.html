@@ -1,0 +1,16 @@
+{% extends 'stridon_app/base.html' %}
+{% block body %}
+<div class="container">
+    <h1>
+        Hello, {{ stridon_user }}
+        You are viewing article {{ article.title }} written by {{ article.author }}
+    </h1>
+    <h2>{{ article.title }}</h2>
+    <h3>written on {{ article.date_posted }}</h3>
+    <hr>
+    <p>{{ article.content }}</p>
+
+    <a href="{% url 'home' %}">Go back home</a>
+</div>
+
+{% endblock body %}
