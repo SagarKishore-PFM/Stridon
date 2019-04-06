@@ -1,0 +1,16 @@
+{% extends 'stridon_app/base.html' %}
+{% block body %}
+<div class="container">
+    <h1>
+        Congrats {{ stridon_user.username }}. You have subscribed to Stridon.
+    </h1>
+    Debugging Info
+    <ul>
+        <li>Group Name - {{ paid_group.name }}</li>
+        <li>Group Users - {{ paid_group.user_set.all }}</li>
+        <li>Group Permissions- {{ paid_group.permissions.all }}</li>
+        <li>User has group permission - {{ perms.stridon_app.can_view_paid_articles }}</li>
+    </ul>
+</div>
+
+{% endblock body %}
