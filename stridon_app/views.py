@@ -4,11 +4,18 @@ from nucypher_utils.doctor import run_doc
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 
 # Create your views here.
 @login_required(login_url='/login/')
 def home(request):
-    return render(request, 'stridon_app/home.html')
+    stridon_user = None
+    if request.user.is_authenticated:
+        stridon_user = request.user
+    context = {
+        'stridon_user': stridon_user,
+    }
+    return render(request, 'stridon_app/home.html', context=context)
 
 
 def signup(request):
@@ -21,6 +28,21 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, 'stridon_app/signup.html', {'form': form})
+
+@login_required(login_url='/login/')
+def subscribe(request):
+    paid_user_group = Group.objects.get(name='Paid Users Group')
+    stridon_user = None
+    if request.user.is_authenticated:
+        stridon_user = request.user
+    paid_user_group.user_set.add(stridon_user)
+    paid_user_group.save()
+    stridon_user.save()
+    context = {
+        'stridon_user': stridon_user,
+        'paid_group': paid_user_group,
+    }
+    return render(request, 'stridon_app/subscribe.html', context=context)
 
 
 def alice(request):
