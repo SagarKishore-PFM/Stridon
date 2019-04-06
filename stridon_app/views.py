@@ -1,10 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from nucypher_utils.alice import run
 from nucypher_utils.doctor import run_doc
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
+
+from .models import Article
+from .forms import ArticleForm
+
 
 # Create your views here.
 @login_required(login_url='/login/')
@@ -60,6 +64,44 @@ def unsubscribe(request):
         'paid_group': paid_user_group,
     }
     return render(request, 'stridon_app/unsubscribe.html', context=context)
+
+
+@login_required(login_url='/login/')
+def add_article(request):
+    stridon_user = None
+    if request.user.is_authenticated:
+        stridon_user = request.user
+    context = {
+        '': ''
+    }
+    if request.method == 'POST':
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            article_instance = form.save(commit=False)
+            article_instance.author = stridon_user
+            article_instance.save()
+            return redirect('view-article', article_id=article_instance.id)
+            # return redirect('home')
+    else:
+        form = ArticleForm()
+        context = {
+            'form': form,
+            'stridon_user': stridon_user,
+        }
+    return render(request, 'stridon_app/add_article.html', context=context)
+
+
+@login_required(login_url='/login/')
+def view_article(request, article_id):
+    stridon_user = None
+    if request.user.is_authenticated:
+        stridon_user = request.user
+    article = get_object_or_404(Article, id=article_id)
+    context = {
+        'stridon_user': stridon_user,
+        'article': article,
+    }
+    return render(request, 'stridon_app/view_article.html', context=context)
 
 
 def alice(request):
