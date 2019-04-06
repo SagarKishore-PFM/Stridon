@@ -104,6 +104,19 @@ def view_article(request, article_id):
     return render(request, 'stridon_app/view_article.html', context=context)
 
 
+@login_required(login_url='/login/')
+def list_articles(request):
+    articles_list = Article.objects.all()
+    stridon_user = None
+    if request.user.is_authenticated:
+        stridon_user = request.user
+    context = {
+        'articles_list': articles_list,
+        'stridon_user': stridon_user,
+    }
+    return render(request, 'stridon_app/list_articles.html', context=context)
+
+
 def alice(request):
     run()
     return render(request, 'stridon_app/alice.html')
