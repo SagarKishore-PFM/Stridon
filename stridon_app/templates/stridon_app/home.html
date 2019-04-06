@@ -14,13 +14,18 @@
 
     {% else %}
         <p>Subscribe to Stridon Premium for our best content</p>
-    </h2>
-    <ol>
+        <ol>
         <li>
             <a href="{% url 'subscribe' %}">Subscribe to Stridon</a>
         </li>
     </ol>
     {% endif %}
-</div>
 
+    <h2>Create a new article</h2>
+    <ol>
+        <li>
+            <a href="{% url 'add-article' %}">Create a new article</a>
+        </li>
+    </ol>
+</div>
 {% endblock body %}
