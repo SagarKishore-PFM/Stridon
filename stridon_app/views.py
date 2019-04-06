@@ -29,6 +29,7 @@ def signup(request):
         form = UserCreationForm()
     return render(request, 'stridon_app/signup.html', {'form': form})
 
+
 @login_required(login_url='/login/')
 def subscribe(request):
     paid_user_group = Group.objects.get(name='Paid Users Group')

@@ -1,9 +1,5 @@
 from django.core.management import BaseCommand
-
 from django.contrib.auth.models import Group, Permission, User
-
-from django.contrib.contenttypes.models import ContentType
-from ...models import Article
 
 
 class Command(BaseCommand):
@@ -39,8 +35,12 @@ class Command(BaseCommand):
 
         # Create Groups
         self.stdout.write("Creating Free and Paid Groups")
-        free_user_group, created = Group.objects.get_or_create(name='Free Users Group')
-        paid_user_group, created = Group.objects.get_or_create(name='Paid Users Group')
+        free_user_group, created = Group.objects.get_or_create(
+            name='Free Users Group',
+            )
+        paid_user_group, created = Group.objects.get_or_create(
+            name='Paid Users Group',
+            )
 
         # Fetch the required permission and add it to the group
         self.stdout.write("Adding permissions to Paid Groups")
@@ -62,8 +62,3 @@ class Command(BaseCommand):
             self.stdout.write("Alice 1 pass")
         if not alice2.has_perm('stridon_app.can_view_paid_articles'):
             self.stdout.write("Alice 2 pass")
-
-
-
-
-# Add them to groups
