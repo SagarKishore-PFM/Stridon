@@ -1,15 +1,22 @@
 {% extends 'stridon_app/base.html' %}
 {% block body %}
 <div class="container">
-    <h1>
-        Hello, {{ stridon_user }}
-        You are viewing article {{ article.title }} written by {{ article.author }}
-    </h1>
-    <h2>{{ article.title }}</h2>
-    <h3>written on {{ article.date_posted }}</h3>
+    <h3>
+        Hello, {{ stridon_user|title }}. You are viewing article <b>{{ article.title }}</b> written by {{ article.author|title }}
+    </h3>
+    <hr>
+    <hr>
+    <br>
+    <h2>{{ article.title }}</h>
+    <h4>written on {{ article.date_posted }}</h>
     <hr>
     <p>{{ article.content }}</p>
-
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <hr>
     <a href="{% url 'home' %}">Go back home</a>
 </div>
 
