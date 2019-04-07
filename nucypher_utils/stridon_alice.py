@@ -1,7 +1,8 @@
 import os
-import shutil
 import json
+
 from twisted.logger import globalLogPublisher
+
 from nucypher.characters.lawful import Ursula
 from nucypher.utilities.logging import SimpleObserver
 from nucypher.config.characters import AliceConfiguration
