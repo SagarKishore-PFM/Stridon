@@ -1,13 +1,16 @@
 from django.core.management import BaseCommand
 from django.contrib.auth.models import Group, Permission, User
+from nucypher_utils.stridon_alice import initialize_alice_policy_pubkey
 
 
 class Command(BaseCommand):
     # Show this when the user types help
     help = "Create Test Users"
 
-    # A command must define handle()
     def handle(self, *args, **options):
+        # Initialize alice and policy pubkey
+        self.stdout.write("Creating Alice and policy pubkey")
+        initialize_alice_policy_pubkey()
         # Create Test Users
         self.stdout.write("Creating test Users")
 
