@@ -25,7 +25,9 @@
                         {% endif %}
 
                     {% else %}
-                        {% render_field field class="form-control" %}
+                        <div class="field form">
+                            {{ field }}
+                        </div>
                     {% endif %}
                 {% if field.help_text %}
                     <small class="form-text text-muted">
