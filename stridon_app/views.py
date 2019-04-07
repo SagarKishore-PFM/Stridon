@@ -101,11 +101,26 @@ def view_article(request, article_id):
     if request.user.is_authenticated:
         stridon_user = request.user
     article = get_object_or_404(Article, id=article_id)
-    context = {
-        'stridon_user': stridon_user,
-        'article': article,
-    }
-    return render(request, 'stridon_app/view_article.html', context=context)
+    if not article.is_premium_content\
+            or stridon_user.has_perm('stridon_app.can_view_paid_articles'):
+        context = {
+            'stridon_user': stridon_user,
+            'article': article,
+        }
+        return render(
+            request,
+            'stridon_app/view_article.html',
+            context=context
+        )
+    else:
+        context = {
+            'stridon_user': stridon_user,
+        }
+        return render(
+            request,
+            'stridon_app/premium_members_only.html',
+            context=context,
+        )
 
 
 @login_required(login_url='/login/')
