@@ -1,0 +1,20 @@
+{% extends 'stridon_app/base.html' %}
+{% block body %}
+<div class="container">
+    <br>
+    <h3>
+        Hello, {{ stridon_user|title }}. Sorry the article you want to read is for paid members only.
+    </h3>
+    <h3>
+        Please subscribe by clicking on the link below to get access now!
+    </h3>
+    <ol>
+        <li>
+            <a href="{% url 'subscribe' %}">Subscribe to Stridon</a>
+        </li>
+    </ol>
+
+    <a href="{% url 'home' %}">Go back home</a>
+</div>
+
+{% endblock body %}
