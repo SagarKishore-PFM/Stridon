@@ -23,5 +23,6 @@ class Article(models.Model):
 
 # TODO:
 
-# (Maybe)
-# Add a group model that has FK to user and article.
+# Try and encrypt the article content that comes as plain text from forms
+# and save it into article content field again. See if bytes can be stored in
+# TextField. Then decide what to do with the data source pub keys.
