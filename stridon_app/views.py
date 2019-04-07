@@ -9,6 +9,9 @@ from django.contrib.auth.models import Group
 from .models import Article
 from .forms import ArticleForm
 from nucypher_utils.stridon_data_encrypt import encrypt_data
+from nucypher_utils.stridon_premium_subscription import \
+    subscribe_and_grant_permission_to, revoke_permission_from
+
 
 # Create your views here.
 @login_required(login_url='/login/')
@@ -44,14 +47,17 @@ def subscribe(request):
     stridon_user = None
     if request.user.is_authenticated:
         stridon_user = request.user
-    paid_user_group.user_set.add(stridon_user)
-    paid_user_group.save()
-    stridon_user.save()
-    context = {
-        'stridon_user': stridon_user,
-        'paid_group': paid_user_group,
-    }
-    return render(request, 'stridon_app/subscribe.html', context=context)
+    if subscribe_and_grant_permission_to(stridon_user.username):
+        paid_user_group.user_set.add(stridon_user)
+        paid_user_group.save()
+        stridon_user.save()
+        context = {
+            'stridon_user': stridon_user,
+            'paid_group': paid_user_group,
+        }
+        return render(request, 'stridon_app/subscribe.html', context=context)
+    else:
+        raise
 
 
 @login_required(login_url='/login/')
@@ -60,14 +66,17 @@ def unsubscribe(request):
     stridon_user = None
     if request.user.is_authenticated:
         stridon_user = request.user
-    stridon_user.groups.remove(paid_user_group)
-    paid_user_group.save()
-    stridon_user.save()
-    context = {
-        'stridon_user': stridon_user,
-        'paid_group': paid_user_group,
-    }
-    return render(request, 'stridon_app/unsubscribe.html', context=context)
+    if revoke_permission_from(stridon_user.username):
+        stridon_user.groups.remove(paid_user_group)
+        paid_user_group.save()
+        stridon_user.save()
+        context = {
+            'stridon_user': stridon_user,
+            'paid_group': paid_user_group,
+        }
+        return render(request, 'stridon_app/unsubscribe.html', context=context)
+    else:
+        raise
 
 
 @login_required(login_url='/login/')
