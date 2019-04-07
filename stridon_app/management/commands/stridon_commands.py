@@ -1,6 +1,7 @@
 from django.core.management import BaseCommand
 from django.contrib.auth.models import Group, Permission, User
 from nucypher_utils.stridon_alice import initialize_alice_policy_pubkey
+# from stridon_app.models import Article
 
 
 class Command(BaseCommand):
@@ -113,3 +114,20 @@ class Command(BaseCommand):
         #     self.stdout.write("Admin pass")
         # else:
         #     raise Exception("Permission check failed for Admin")
+
+        # Add free and paid articles
+        # Uncomment if needed
+
+        # free_article = Article.objects.create(
+        #     title='Free Article 1',
+        #     author=alice,
+        #     content='Free Article Content',
+        #     is_premium_content=False,
+        # )
+
+        # paid_article = Article.objects.create(
+        #     title='Free Article 1',
+        #     author=alice,
+        #     content='Free Article Content',
+        #     is_premium_content=False,
+        # )
