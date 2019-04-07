@@ -106,12 +106,14 @@ def view_article(request, article_id):
 
 @login_required(login_url='/login/')
 def list_articles(request):
-    articles_list = Article.objects.all()
+    paid_articles_list = Article.objects.filter(premium_content=True)
+    free_articles_list = Article.objects.filter(premium_content=False)
     stridon_user = None
     if request.user.is_authenticated:
         stridon_user = request.user
     context = {
-        'articles_list': articles_list,
+        'paid_articles_list': paid_articles_list,
+        'free_articles_list': free_articles_list,
         'stridon_user': stridon_user,
     }
     return render(request, 'stridon_app/list_articles.html', context=context)
