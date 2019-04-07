@@ -10,26 +10,46 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # Create Test Users
         self.stdout.write("Creating test Users")
+
         try:
-            alice1 = User.objects.get(username='alice1')
-            self.stdout.write("Alice1 exists")
+            alice = User.objects.get(username='alice')
+            self.stdout.write("Alice exists")
         except User.DoesNotExist:
-            self.stdout.write("Alice1 does not exist...creating")
-            alice1 = User.objects.create_user(
-                'alice1',
+            self.stdout.write("Alice does not exist...creating")
+            alice = User.objects.create_user(
+                'alice',
                 password='stridontest123',
             )
+
         try:
-            alice2 = User.objects.get(username='alice2')
-            self.stdout.write("Alice2 exists")
+            free_bob = User.objects.get(username='freebob')
+            self.stdout.write("Free Bob exists")
         except User.DoesNotExist:
-            self.stdout.write("Alice2 does not exist...creating")
-            alice2 = User.objects.create_user(
-                'alice2',
+            self.stdout.write("Free Bob does not exist...creating")
+            free_bob = User.objects.create_user(
+                'freebob',
                 password='stridontest123',
             )
-        alice1.save()
-        alice2.save()
+
+        try:
+            paid_bob = User.objects.get(username='paidbob')
+            self.stdout.write("Paid Bob exists")
+        except User.DoesNotExist:
+            self.stdout.write("Paid Bob does not exist...creating")
+            paid_bob = User.objects.create_user(
+                'paidbob',
+                password='stridontest123',
+            )
+
+        alice.save()
+        free_bob.save()
+        paid_bob.save()
+
+        try:
+            stridon_admin = User.objects.get(is_superuser=True)
+        except User.DoesNotExist:
+            self.stdout.write("Please Create a superuser")
+            raise
 
         self.stdout.write("Test Users Created Successfully")
 
@@ -42,6 +62,11 @@ class Command(BaseCommand):
             name='Paid Users Group',
             )
 
+        self.stdout.write("Creating Admin Group")
+        admin_user_group, created = Group.objects.get_or_create(
+            name='Stridon Admins Group',
+        )
+
         # Fetch the required permission and add it to the group
         self.stdout.write("Adding permissions to Paid Groups")
         can_view_paid_articles_permission = Permission.objects.get(
@@ -50,15 +75,38 @@ class Command(BaseCommand):
         paid_user_group.permissions.add(can_view_paid_articles_permission)
         paid_user_group.save()
         free_user_group.save()
+        admin_user_group.save()
 
         # Add users to the groups
         self.stdout.write("Adding users to Free and Paid Groups")
-        paid_user_group.user_set.add(alice1)
-        free_user_group.user_set.add(alice2)
+        paid_user_group.user_set.add(alice)
+        paid_user_group.save()
+        free_user_group.user_set.add(free_bob)
+        free_user_group.save()
+        paid_user_group.user_set.add(paid_bob)
+        paid_user_group.save()
+        self.stdout.write("Adding admins to their group")
+        admin_user_group.user_set.add(stridon_admin)
+        admin_user_group.save()
 
         # Assert users have permissions
         self.stdout.write("Asserting permissions for each user")
-        if alice1.has_perm('stridon_app.can_view_paid_articles'):
-            self.stdout.write("Alice 1 pass")
-        if not alice2.has_perm('stridon_app.can_view_paid_articles'):
-            self.stdout.write("Alice 2 pass")
+        if alice.has_perm('stridon_app.can_view_paid_articles'):
+            self.stdout.write("Alice pass")
+        else:
+            raise Exception("Permission check failed for Alice")
+        if not free_bob.has_perm('stridon_app.can_view_paid_articles'):
+            self.stdout.write("Free Bob pass")
+        else:
+            raise Exception("Permission check failed for Free Bob")
+        if paid_bob.has_perm('stridon_app.can_view_paid_articles'):
+            self.stdout.write("Paid Bob pass")
+        else:
+            raise Exception("Permission check failed for Paid Bob")
+
+        # It seems superusers inherit all permissions.
+
+        # if not stridon_admin.has_perm('stridon_app.can_view_paid_articles'):
+        #     self.stdout.write("Admin pass")
+        # else:
+        #     raise Exception("Permission check failed for Admin")
