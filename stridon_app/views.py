@@ -8,7 +8,7 @@ from django.contrib.auth.models import Group
 
 from .models import Article
 from .forms import ArticleForm
-
+from nucypher_utils.stridon_data_encrypt import encrypt_data
 
 # Create your views here.
 @login_required(login_url='/login/')
@@ -81,8 +81,21 @@ def add_article(request):
     if request.method == 'POST':
         form = ArticleForm(request.POST)
         if form.is_valid():
+            # data souce pub key naming convention:
+            # author_name-article_title-article_id-datasource-pubkey.msgpack
             article_instance = form.save(commit=False)
             article_instance.author = stridon_user
+
+            DATASOURCE_FILENAME = f"\
+{article_instance.author.username}-\
+{article_instance.title}-\
+{article_instance.id}-\
+datasource-pubkey.msgpack"
+
+            article_instance.content = encrypt_data(
+                plain_text=article_instance.content,
+                datasource_filename=DATASOURCE_FILENAME
+            )
             article_instance.save()
             return redirect('view-article', article_id=article_instance.id)
             # return redirect('home')
