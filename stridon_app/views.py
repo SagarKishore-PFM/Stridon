@@ -110,8 +110,8 @@ def view_article(request, article_id):
 
 @login_required(login_url='/login/')
 def list_articles(request):
-    paid_articles_list = Article.objects.filter(premium_content=True)
-    free_articles_list = Article.objects.filter(premium_content=False)
+    paid_articles_list = Article.objects.filter(is_premium_content=True)
+    free_articles_list = Article.objects.filter(is_premium_content=False)
     stridon_user = None
     if request.user.is_authenticated:
         stridon_user = request.user
