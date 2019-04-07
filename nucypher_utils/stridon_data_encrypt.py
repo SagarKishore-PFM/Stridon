@@ -2,16 +2,12 @@ import json
 import os
 from umbral import keys
 from binascii import unhexlify
-
+import msgpack
 from django.conf import settings
-# from ..stridon_app.models import Article
-from stridon_app.models import Article
 from nucypher.characters.lawful import Enrico
 
-### NOTE!!!!!
-### NOT YET WORKING!!!!!!!!!!!
-###
-def encrypt_data(plain_text):
+
+def encrypt_data(plain_text, datasource_filename):
     POLICY_FILENAME = "policy-metadata.json"
 
     POLICY_FILE = os.path.join(
@@ -25,7 +21,6 @@ def encrypt_data(plain_text):
         policy_pubkey_data = json.load(fp)
 
     policy_pubkey_string = policy_pubkey_data['policy_pubkey']
-
 
     policy_pubkey_bytes = unhexlify(policy_pubkey_string)
     policy_pubkey = keys.UmbralPublicKey.from_bytes(policy_pubkey_bytes)
@@ -45,26 +40,23 @@ def encrypt_data(plain_text):
             'kits': kit,
     }
 
-# umbral.keys.wrap_key(policy_pubkey)
+    # data souce pub key naming convention:
+    # author_name-article_title-article_id-datasource-pubkey.msgpack
 
-# message_source = bytes(article.title, 'utf-8')
+    DATA_SOURCE_DIR = os.path.join(
+        settings.BASE_DIR,
+        'nucypher_utils',
+        'nucypher_data',
+    )
 
+    DATA_SOURCE_FILE_NAME = datasource_filename
 
-# pt = msgpack.dumps(enc_req, use_bin_type=True)
-# message_kit = data_source.encrypt_message(pt)
+    with open(
+        os.path.join(
+            DATA_SOURCE_DIR, DATA_SOURCE_FILE_NAME
+        ),
+        "wb"
+    ) as file:
+        msgpack.dump(data, file, use_bin_type=True)
 
-# pt = bytes(article.title, 'utf-8')
-
-#####
-# article_data = {
-#     'title': article.title,
-#     'content': article.content,
-#     'is_premium_content': article.is_premium_content,
-# }
-
-# plain_text = msgpack.dumps(article_data, use_bin_type=True)
-# message_kit = data_source.encrypt_message(plain_text)
-# data = {
-#     'data_source_pubkey': data_source_public_key,
-#     'message_kit': message_kit,
-# }
+    return kit_bytes
