@@ -1,17 +1,41 @@
 {% extends 'stridon_app/base.html' %}
 {% block body %}
 <div class="container">
-    <h1>
-        Hello, {{ stridon_user }}
-        You are viewing list of articles.
-    </h1>
+    <br>
+    <h4>
+        Hello, {{ stridon_user|title }}. You are viewing list of articles.
+    </h4>
+    <h2>
+        <b>Free Articles list:</b>
+    </h2>
+    <hr>
     <ul>
-        {% for article in articles_list %}
+        {% for article in free_articles_list %}
         <li>
-            <a href="{% url 'view-article' article.id %}">{{ article.title }}</a>
+            <a href="{% url 'view-article' article.id %}">{{ article.title }} (FREE)</a>
         </li>
         {% endfor %}
     </ul>
+    <h2>
+        <b>Paid Articles list:</b>
+    </h2>
+    <hr>
+    <ul>
+        {% for article in paid_articles_list %}
+        <li>
+            <a href="{% url 'view-article' article.id %}">
+                {{ article.title }} (PAID)
+                {% if not perms.stridon_app.can_view_paid_articles %}
+                    (SUBSCRIBE TO READ)
+                {% endif %}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    <br>
+    <br>
+    <br>
+    <br>
     <a href="{% url 'home' %}">Go back home</a>
 </div>
 
