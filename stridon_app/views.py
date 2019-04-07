@@ -25,9 +25,13 @@ def home(request):
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
+        free_user_group = Group.objects.get(name='Free Users Group')
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
+            free_user_group.user_set.add(user)
+            free_user_group.save()
+            user.save()
             return redirect('home')
     else:
         form = UserCreationForm()
