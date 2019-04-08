@@ -1,6 +1,8 @@
 from django.core.management import BaseCommand
 from django.contrib.auth.models import Group, Permission, User
 from nucypher_utils.stridon_alice import initialize_alice_policy_pubkey
+from nucypher_utils.stridon_premium_subscription import\
+    subscribe_and_grant_permission_to
 # from stridon_app.models import Article
 
 
@@ -83,10 +85,12 @@ class Command(BaseCommand):
 
         # Add users to the groups
         self.stdout.write("Adding users to Free and Paid Groups")
+        subscribe_and_grant_permission_to(alice.username)
         paid_user_group.user_set.add(alice)
         paid_user_group.save()
         free_user_group.user_set.add(free_bob)
         free_user_group.save()
+        subscribe_and_grant_permission_to(paid_bob.username)
         paid_user_group.user_set.add(paid_bob)
         paid_user_group.save()
         self.stdout.write("Adding admins to their group")
