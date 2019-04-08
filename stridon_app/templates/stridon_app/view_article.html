@@ -17,7 +17,14 @@
     <br>
     <br>
     <hr>
-    <a href="{% url 'home' %}">Go back home</a>
+    <ul>
+    {% if failed %}
+        <li>
+            <a href="{% url 'plain-view-article' article.id %}">View the plain text of the article</a>
+        </li>
+    {% endif %}
+    <li><a href="{% url 'home' %}">Go back home</a></li>
+    </ul>
 </div>
 
 {% endblock body %}
