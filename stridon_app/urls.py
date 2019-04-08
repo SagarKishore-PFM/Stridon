@@ -24,5 +24,10 @@ urlpatterns = [
         views.view_article,
         name='view-article'
     ),
+    re_path(
+        r'^plain_view_article/(?P<article_id>\d+)/$',
+        views.plain_view_article,
+        name='plain-view-article'
+    ),
     path('articles-list/', views.list_articles, name='list-articles'),
 ]
