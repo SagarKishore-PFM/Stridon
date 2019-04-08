@@ -9,9 +9,10 @@ from twisted.logger import globalLogPublisher
 from django.conf import settings
 
 from nucypher.utilities.logging import SimpleObserver
-from nucypher.characters.lawful import Ursula, Bob
+from nucypher.characters.lawful import Ursula
 from nucypher.network.middleware import RestMiddleware
 from nucypher.config.characters import AliceConfiguration
+from nucypher.config.characters import BobConfiguration
 
 
 def subscribe_and_grant_permission_to(username):
@@ -19,31 +20,27 @@ def subscribe_and_grant_permission_to(username):
 
     # Reinitialize Alice from our config file
 
-    TEMP_ALICE_DIR = os.path.join('/', 'tmp', 'stridon-demo-alice')
+    ALICE_CONFIG_DIR = os.path.join(
+        settings.BASE_DIR,
+        'nucypher_char_configs',
+        'stridon-demo-alice')
 
-    SEEDNODE_URL = 'localhost:11500'
-
-    ursula2 = Ursula.from_seed_and_stake_info(
-        seed_uri=SEEDNODE_URL,
-        federated_only=True,
-        minimum_stake=0
+    ALICE_CONFIG_FILE = os.path.join(
+        ALICE_CONFIG_DIR,
+        "alice.config"
     )
 
     passphrase = "TEST_ALICE_PASSWORD"
 
-    alice_config = AliceConfiguration(
-        config_root=os.path.join(TEMP_ALICE_DIR),
-        is_me=True,
-        known_nodes={ursula2},
-        start_learning_now=False,
-        federated_only=True,
-        learn_on_same_thread=True,
-    )
+    new_alice_config = AliceConfiguration.from_configuration_file(
+            filepath=ALICE_CONFIG_FILE,
+            network_middleware=RestMiddleware(),
+            start_learning_now=False,
+            save_metadata=False,
+        )
+    new_alice_config.keyring.unlock(password=passphrase)
 
-    alice_config.initialize(password=passphrase)
-    alice_config.keyring.unlock(password=passphrase)
-
-    alice = alice_config.produce()
+    alice = new_alice_config()
     alice.start_learning_loop(now=True)
 
     # Now onto Bob
@@ -54,7 +51,8 @@ def subscribe_and_grant_permission_to(username):
         settings.BASE_DIR,
         'nucypher_utils',
         'nucypher_data',
-        'premium_members_files')
+        'premium_members_files',
+        username)
 
     ursula = Ursula.from_seed_and_stake_info(
         seed_uri=SEEDNODE_URL,
@@ -62,37 +60,29 @@ def subscribe_and_grant_permission_to(username):
         minimum_stake=0
     )
 
-    premium_user = Bob(
-        known_nodes=[ursula],
-        network_middleware=RestMiddleware(),
+    bob_config = BobConfiguration(
+        config_root=os.path.join(PREMIUM_USERS_DIR),
+        is_me=True,
+        known_nodes={ursula},
+        start_learning_now=False,
         federated_only=True,
-        start_learning_now=True,
-        learn_on_same_thread=True
+        learn_on_same_thread=True,
     )
 
+    bob_config.initialize(password=passphrase)
+    bob_config.keyring.unlock(password=passphrase)
+    bob_config_file = bob_config.to_configuration_file()
+
+    premium_user = bob_config.produce()
     policy_end_datetime = maya.now() + datetime.timedelta(days=5)
 
     label = b'stridon-premium-service'
 
     policy_pubkey = alice.get_policy_pubkey_from_label(label)
 
-    # POLICY_FILENAME = "policy-metadata.json"
-    # POLICY_FILE = os.path.join(
-    #     settings.BASE_DIR,
-    #     'nucypher_utils',
-    #     'nucypher_data',
-    #     POLICY_FILENAME,
-    # )
-    # policy_json = {
-    #     "policy_pubkey": policy_pubkey.to_bytes().hex(),
-    # }
-
-    # with open(POLICY_FILE, 'w') as f:
-    #     json.dump(policy_json, f)
-
     policy = alice.grant(
-        premium_user,
-        label,
+        bob=premium_user,
+        label=label,
         m=1,
         n=1,
         expiration=policy_end_datetime
