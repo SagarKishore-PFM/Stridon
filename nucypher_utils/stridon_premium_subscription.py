@@ -16,12 +16,15 @@ from nucypher.config.characters import BobConfiguration
 
 
 def subscribe_and_grant_permission_to(username):
+
     globalLogPublisher.addObserver(SimpleObserver())
 
     # Reinitialize Alice from our config file
 
     ALICE_CONFIG_DIR = os.path.join(
         settings.BASE_DIR,
+        'nucypher_utils',
+        'nucypher_data',
         'nucypher_char_configs',
         'stridon-demo-alice')
 
@@ -41,17 +44,17 @@ def subscribe_and_grant_permission_to(username):
     new_alice_config.keyring.unlock(password=passphrase)
 
     alice = new_alice_config()
-    alice.start_learning_loop(now=True)
+    # alice.start_learning_loop(now=True)
 
     # Now onto Bob
 
-    SEEDNODE_URL = 'localhost:11501'
+    SEEDNODE_URL = 'localhost:11500'
 
-    PREMIUM_USERS_DIR = os.path.join(
+    BOB_CONFIG_DIR = os.path.join(
         settings.BASE_DIR,
         'nucypher_utils',
         'nucypher_data',
-        'premium_members_files',
+        'nucypher_char_configs',
         username)
 
     ursula = Ursula.from_seed_and_stake_info(
@@ -61,7 +64,7 @@ def subscribe_and_grant_permission_to(username):
     )
 
     bob_config = BobConfiguration(
-        config_root=os.path.join(PREMIUM_USERS_DIR),
+        config_root=os.path.join(BOB_CONFIG_DIR),
         is_me=True,
         known_nodes={ursula},
         start_learning_now=False,
@@ -93,31 +96,4 @@ def subscribe_and_grant_permission_to(username):
 
     premium_user.join_policy(label, alices_pubkey_bytes)
 
-    PREMIUM_USER_FILENAME = f"{username}.json"
-    PREMIUM_USER_FILE = os.path.join(
-        PREMIUM_USERS_DIR,
-        PREMIUM_USER_FILENAME,
-    )
-
-    with open(PREMIUM_USER_FILE, 'w') as fp:
-        fp.write('aaa')
-
     return policy.public_key == policy_pubkey
-
-
-def revoke_permission_from(username):
-
-    PREMIUM_USERS_DIR = os.path.join(
-        settings.BASE_DIR,
-        'nucypher_utils',
-        'nucypher_data',
-        'premium_members_files')
-
-    PREMIUM_USER_FILENAME = f"{username}.json"
-    PREMIUM_USER_FILE = os.path.join(
-        PREMIUM_USERS_DIR,
-        PREMIUM_USER_FILENAME,
-    )
-
-    os.remove(PREMIUM_USER_FILE)
-    return not os.path.exists(PREMIUM_USER_FILE)
