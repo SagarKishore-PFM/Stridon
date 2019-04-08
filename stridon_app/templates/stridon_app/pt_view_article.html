@@ -1,0 +1,25 @@
+{% extends 'stridon_app/base.html' %}
+{% block body %}
+<div class="container">
+    <h3>
+        Hello, {{ stridon_user|title }}. You are viewing article <b>{{ article.title }}</b> written by {{ article.author|title }}
+    </h3>
+    <hr>
+    <h2>This is a plain text view. If you see this then we haven't fixed the issue mentioned in the readme.</h2>
+    <hr>
+    <hr>
+    <br>
+    <h2>{{ article.title }}</h>
+    <h4>written on {{ article.date_posted }}</h>
+    <hr>
+    <p>{{ article.plain_content }}</p>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <hr>
+    <a href="{% url 'home' %}">Go back home</a>
+</div>
+
+{% endblock body %}
