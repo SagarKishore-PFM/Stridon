@@ -44,7 +44,6 @@ def subscribe_and_grant_permission_to(username):
     new_alice_config.keyring.unlock(password=passphrase)
 
     alice = new_alice_config()
-    alice.start_learning_loop(now=True)
 
     # Now onto Bob
 
@@ -77,18 +76,20 @@ def subscribe_and_grant_permission_to(username):
     bob_config_file = bob_config.to_configuration_file()
 
     premium_user = bob_config.produce()
-    premium_user.start_learning_loop(now=True)
+
     policy_end_datetime = maya.now() + datetime.timedelta(days=5)
 
     label = b'stridon-premium-service'
 
     policy_pubkey = alice.get_policy_pubkey_from_label(label)
 
+    alice.start_learning_loop(now=True)
+
     policy = alice.grant(
         bob=premium_user,
         label=label,
-        m=2,
-        n=3,
+        m=1,
+        n=1,
         expiration=policy_end_datetime
     )
 
