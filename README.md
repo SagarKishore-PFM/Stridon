@@ -59,7 +59,7 @@ all with pass>>> stridontest123
 (more screenshots to follow)
 
 ## Limitations
-- Due to minor bugs in the nucypher api, article content cannot be decrypted successfully. For further information read ![Nucypher Bug](https://github.com/sagarkishore-pfm/stridon-test/nucypher-bug.md)
+- Due to minor bugs in the nucypher api, article content cannot be decrypted successfully. For further information read [Nucypher Bug](https://github.com/sagarkishore-pfm/stridon-test/nucypher-bug.md)
 - For simplicity's sake certain comprimises have been made, for example we are yet to add user friendly features such as the ability to edit news articles.
 ## Future Development
 We'd like to split the system into separate applications. For example Desktop Apps for writing / publishing and Mobile Apps for reading.
