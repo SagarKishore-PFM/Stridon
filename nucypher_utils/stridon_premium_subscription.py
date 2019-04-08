@@ -97,3 +97,10 @@ def subscribe_and_grant_permission_to(username):
     premium_user.join_policy(label, alices_pubkey_bytes)
 
     return policy.public_key == policy_pubkey
+    from nucypher.crypto.powers import SigningPower, DecryptingPower
+    print("ALICE")
+    print(alice.public_keys(SigningPower))
+    print(alice.public_keys(DecryptingPower))
+    print("PREMIUM_USER")
+    print(premium_user.public_keys(SigningPower))
+    print(premium_user.public_keys(DecryptingPower))

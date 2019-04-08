@@ -95,3 +95,6 @@ def initialize_alice_policy_pubkey(
 
     with open(POLICY_FILE, 'w') as f:
         json.dump(policy_json, f)
+    from nucypher.crypto.powers import SigningPower, DecryptingPower
+    print(alice.public_keys(SigningPower))
+    print(alice.public_keys(DecryptingPower))
