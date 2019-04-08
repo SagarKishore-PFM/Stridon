@@ -1,8 +1,8 @@
 import os
 import json
-import shutil
 
 from twisted.logger import globalLogPublisher
+from django.conf import settings
 
 from nucypher.characters.lawful import Ursula
 from nucypher.utilities.logging import SimpleObserver
@@ -19,14 +19,15 @@ def initialize_alice_policy_pubkey(
 
     globalLogPublisher.addObserver(SimpleObserver())
 
-    TEMP_ALICE_DIR = os.path.join('/', 'tmp', 'stridon-demo-alice')
+    ALICE_CONFIG_DIR = os.path.join(
+        settings.BASE_DIR,
+        'nucypher_char_configs',
+        'stridon-demo-alice')
 
     # We expect the url of the seednode as the first argument.
     SEEDNODE_URL = 'localhost:11500'
 
     POLICY_FILENAME = "policy-metadata.json"
-
-    shutil.rmtree(TEMP_ALICE_DIR, ignore_errors=True)
 
     ursula = Ursula.from_seed_and_stake_info(
         seed_uri=SEEDNODE_URL,
@@ -37,7 +38,7 @@ def initialize_alice_policy_pubkey(
     passphrase = alice_encryption_password
 
     alice_config = AliceConfiguration(
-        config_root=os.path.join(TEMP_ALICE_DIR),
+        config_root=os.path.join(ALICE_CONFIG_DIR),
         is_me=True,
         known_nodes={ursula},
         start_learning_now=False,
@@ -48,6 +49,7 @@ def initialize_alice_policy_pubkey(
     alice_config.initialize(password=passphrase)
     alice_config.keyring.unlock(password=passphrase)
     alice_config_file = alice_config.to_configuration_file()
+    print(alice_config_file)
 
     alice = alice_config.produce()
     label = "stridon-premium-service"
