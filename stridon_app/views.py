@@ -11,6 +11,7 @@ from .forms import ArticleForm
 from nucypher_utils.stridon_data_encrypt import encrypt_data
 from nucypher_utils.stridon_premium_subscription import \
     subscribe_and_grant_permission_to
+from nucypher_utils.stridon_data_decrypt import decrypt_article
 
 
 # Create your views here.
@@ -97,6 +98,7 @@ def add_article(request):
 {article_instance.title}-\
 datasource-pubkey.msgpack"
 
+            article_instance.plain_content = article_instance.content
             article_instance.content = encrypt_data(
                 plain_text=article_instance.content,
                 datasource_filename=DATASOURCE_FILENAME
@@ -121,15 +123,20 @@ def view_article(request, article_id):
     article = get_object_or_404(Article, id=article_id)
     if not article.is_premium_content\
             or stridon_user.has_perm('stridon_app.can_view_paid_articles'):
+
+        pt_article_content, failed = decrypt_article(article)
         context = {
             'stridon_user': stridon_user,
             'article': article,
+            'pt_article_content': pt_article_content,
+            'failed': failed,
         }
         return render(
             request,
             'stridon_app/view_article.html',
             context=context
         )
+
     else:
         context = {
             'stridon_user': stridon_user,
@@ -139,6 +146,23 @@ def view_article(request, article_id):
             'stridon_app/premium_members_only.html',
             context=context,
         )
+
+
+@login_required(login_url='/login/')
+def plain_view_article(request, article_id):
+    stridon_user = None
+    if request.user.is_authenticated:
+        stridon_user = request.user
+    article = get_object_or_404(Article, id=article_id)
+    context = {
+        'stridon_user': stridon_user,
+        'article': article,
+    }
+    return render(
+        request,
+        'stridon_app/pt_view_article.html',
+        context=context
+    )
 
 
 @login_required(login_url='/login/')
