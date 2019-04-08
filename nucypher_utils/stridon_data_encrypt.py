@@ -36,7 +36,7 @@ def encrypt_data(plain_text, datasource_filename):
     kit_bytes = message_kit.to_bytes()
     kit = kit_bytes
     data = {
-            'data_source': data_source_public_key,
+            'data_source_public_key': data_source_public_key,
             'kits': kit,
     }
 
