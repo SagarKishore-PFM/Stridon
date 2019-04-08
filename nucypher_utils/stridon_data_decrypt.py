@@ -191,6 +191,9 @@ new_alice_config = AliceConfiguration.from_configuration_file(
 new_alice_config.keyring.unlock(password=passphrase)
 
 alice = new_alice_config()
+
+alice.start_learning_loop(now=True)
+
 alice_pubkey = keys.UmbralPublicKey.from_bytes(bytes(alice.stamp))
 
 # SEEDNODE_URL = 'localhost:11501'
