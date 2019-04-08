@@ -12,6 +12,7 @@ class Article(models.Model):
     content = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
     is_premium_content = models.BooleanField(default=False)
+    plain_content = models.TextField(null=True)
 
     def __str__(self):
         return self.title
