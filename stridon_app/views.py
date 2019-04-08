@@ -10,7 +10,7 @@ from .models import Article
 from .forms import ArticleForm
 from nucypher_utils.stridon_data_encrypt import encrypt_data
 from nucypher_utils.stridon_premium_subscription import \
-    subscribe_and_grant_permission_to, revoke_permission_from
+    subscribe_and_grant_permission_to
 
 
 # Create your views here.
@@ -66,7 +66,6 @@ def unsubscribe(request):
     stridon_user = None
     if request.user.is_authenticated:
         stridon_user = request.user
-    if revoke_permission_from(stridon_user.username):
         stridon_user.groups.remove(paid_user_group)
         paid_user_group.save()
         stridon_user.save()
@@ -75,8 +74,6 @@ def unsubscribe(request):
             'paid_group': paid_user_group,
         }
         return render(request, 'stridon_app/unsubscribe.html', context=context)
-    else:
-        raise
 
 
 @login_required(login_url='/login/')
