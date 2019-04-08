@@ -77,6 +77,7 @@ def subscribe_and_grant_permission_to(username):
     bob_config_file = bob_config.to_configuration_file()
 
     premium_user = bob_config.produce()
+    premium_user.start_learning_loop(now=True)
     policy_end_datetime = maya.now() + datetime.timedelta(days=5)
 
     label = b'stridon-premium-service'
@@ -86,8 +87,8 @@ def subscribe_and_grant_permission_to(username):
     policy = alice.grant(
         bob=premium_user,
         label=label,
-        m=1,
-        n=1,
+        m=2,
+        n=3,
         expiration=policy_end_datetime
     )
 
