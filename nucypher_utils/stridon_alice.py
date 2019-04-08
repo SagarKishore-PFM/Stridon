@@ -1,5 +1,6 @@
 import os
 import json
+import shutil
 
 from twisted.logger import globalLogPublisher
 from django.conf import settings
@@ -18,9 +19,27 @@ def initialize_alice_policy_pubkey(
     """
 
     globalLogPublisher.addObserver(SimpleObserver())
+    NUCYPHER_DATA_DIR = os.path.join(
+        settings.BASE_DIR,
+        'nucypher_utils',
+        'nucypher_data',
+    )
+    if not os.path.exists(NUCYPHER_DATA_DIR):
+        os.mkdir(NUCYPHER_DATA_DIR)
+
+    if os.listdir(NUCYPHER_DATA_DIR):
+        print("data directory not clean...Cleaning...")
+        shutil.rmtree(NUCYPHER_DATA_DIR)
+        if not os.path.exists(NUCYPHER_DATA_DIR):
+            os.mkdir(NUCYPHER_DATA_DIR)
+
+    if os.listdir(NUCYPHER_DATA_DIR):
+        print("Data Directory Cleaned")
 
     ALICE_CONFIG_DIR = os.path.join(
         settings.BASE_DIR,
+        'nucypher_utils',
+        'nucypher_data',
         'nucypher_char_configs',
         'stridon-demo-alice')
 
