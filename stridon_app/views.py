@@ -98,7 +98,6 @@ def add_article(request):
             DATASOURCE_FILENAME = f"\
 {article_instance.author.username}-\
 {article_instance.title}-\
-{article_instance.id}-\
 datasource-pubkey.msgpack"
 
             article_instance.content = encrypt_data(
